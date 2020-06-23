@@ -4,7 +4,7 @@ import os
 
 class OpenscenegraphConan(ConanFile):
     name = "openscenegraph"
-    version = "3.6.3"
+    version = "3.6.5"
     description = "OpenSceneGraph is an open source high performance 3D graphics toolkit"
     topics = ("conan", "openscenegraph", "graphics")
     url = "https://github.com/bincrafters/conan-openscenegraph"
@@ -23,11 +23,11 @@ class OpenscenegraphConan(ConanFile):
         "dynamic_openthreads": [True, False]
     }
     default_options = {
-        "shared": False,
+        "shared": True,
         "fPIC": True,
-        "build_osg_applications": False,
-        "build_osg_plugins_by_default": False,
-        "build_osg_examples": False,
+        "build_osg_applications": True,
+        "build_osg_plugins_by_default": True,
+        "build_osg_examples": True,
         "dynamic_openthreads": True
     }
     _source_subfolder = "source_subfolder"
@@ -41,15 +41,15 @@ class OpenscenegraphConan(ConanFile):
         "libcurl/7.67.0",
         "libpng/1.6.37",
         "libtiff/4.0.9",
-        "sdl2/2.0.10@bincrafters/stable",
         "jasper/2.0.14",
-        "cairo/1.17.2@bincrafters/stable",
-        # "openblas/0.3.9", Removed until openblas is in conan center
+        "boost/1.73.0",
+        "openblas/0.3.9",
     )
 
     def requirements(self):
         if self.settings.os != "Windows":
-            self.requires("asio/1.13.0")
+            pass
+            #self.requires("asio/1.16.1")
 
     def system_requirements(self):
         if tools.os_info.is_linux:
@@ -57,19 +57,14 @@ class OpenscenegraphConan(ConanFile):
                 installer = tools.SystemPackageTool()
                 if self.settings.arch == "x86" and tools.detected_architecture() == "x86_64":
                     installer.install("gcc-multilib")
-                    installer.install("libx11-dev:i386")
                     installer.install("libgl1-mesa-dev:i386")
                     installer.install("libglu1-mesa-dev:i386")
                     installer.install("libegl1-mesa-dev:i386")
-                    installer.install("libgtk2.0-dev:i386")
-                    installer.install("libpoppler-glib-dev:i386")
                 else:
-                    installer.install("libx11-dev")
+                    installer.install("g++")
                     installer.install("libgl1-mesa-dev")
                     installer.install("libglu1-mesa-dev")
                     installer.install("libegl1-mesa-dev")
-                    installer.install("libgtk2.0-dev")
-                    installer.install("libpoppler-glib-dev")
             elif tools.os_info.with_yum:
                 installer = tools.SystemPackageTool()
                 if self.settings.arch == "x86" and tools.detected_architecture() == "x86_64":
@@ -87,7 +82,7 @@ class OpenscenegraphConan(ConanFile):
 
     def source(self):
         prefix = "OpenSceneGraph"
-        sha256 = "51bbc79aa73ca602cd1518e4e25bd71d41a10abd296e18093a8acfebd3c62696"
+        sha256 = "aea196550f02974d6d09291c5d83b51ca6a03b3767e234a8c0e21322927d1e12"
         tools.get("{0}/archive/{1}-{2}.tar.gz".format(self.homepage, prefix, self.version), sha256=sha256)
         extracted_dir = "{}-{}-".format(prefix, prefix) + self.version
         os.rename(extracted_dir, self._source_subfolder)

@@ -62,9 +62,16 @@ class OpenscenegraphConan(ConanFile):
                     installer.install("libegl1-mesa-dev:i386")
                 else:
                     installer.install("g++")
+                    installer.install("build-essential")
+                    installer.install("pkg-config")
                     installer.install("libgl1-mesa-dev")
                     installer.install("libglu1-mesa-dev")
                     installer.install("libegl1-mesa-dev")
+                    installer.install("libcairo-dev")
+                    installer.install("libpoppler-glib-dev")
+                    installer.install("libgtk2.0-dev")
+                    installer.install("libgtkglext1-dev")
+                    installer.install("libgdal-dev")
             elif tools.os_info.with_yum:
                 installer = tools.SystemPackageTool()
                 if self.settings.arch == "x86" and tools.detected_architecture() == "x86_64":
